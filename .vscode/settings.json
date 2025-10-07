@@ -1,0 +1,11 @@
+{
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "files.eol": "\n",
+    
+    "jupyter.notebookFileRoot": "${workspaceFolder}",
+
+    "autoDocstring.docstringFormat": "sphinx-notypes",
+    "autoDocstring.quoteStyle": "'''"
+}
