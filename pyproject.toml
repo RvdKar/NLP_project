@@ -4,8 +4,8 @@ version = "0.1.0"
 description = "An NLP analysis of the subreddit r/AmItheAsshole"
 readme = "README.md"
 authors = [
-    { name = "MartijnBoonen", email = "martijnboonen60@gmail.com" }
-    { name = "oThommy", email = "tvdhil@datho.com" }
+    { name = "MartijnBoonen", email = "martijnboonen60@gmail.com" },
+    { name = "oThommy", email = "tvdhil@datho.com" },
     { name = "RvdKar", email = "rafvandekar@gmail.com" }
 ]
 requires-python = ">=3.13"
