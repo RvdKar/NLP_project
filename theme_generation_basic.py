@@ -26,9 +26,4 @@ def generate_themes(file_path, regex_themes):
     return theme_counts
 
 # print(generate_themes('./data/amitheasshole_comments_preprocessed.txt', themes))
-
-comments =  "My girlfriend said I was rude for not paying rent. GIRLFRIEND My boss yelled at me at work today. My parents think I should apologize. My coworker didn’t invite me to lunch."
-
-
-print(generate_themes(comments, themes))
 ''' Counter({'family': 511163, 'relationships': 306116, 'societal norms': 226386, 'friendship': 120553, 'finance': 118324, 'emotions': 70621, 'work': 70560, 'education': 59018}) '''
