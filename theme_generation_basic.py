@@ -25,5 +25,5 @@ def generate_themes(file_path, regex_themes):
 
     return theme_counts
 
-# print(generate_themes('./data/amitheasshole_comments_preprocessed.txt', themes))
+print(generate_themes('./data/amitheasshole_comments_preprocessed.txt', themes))
 ''' Counter({'family': 511163, 'relationships': 306116, 'societal norms': 226386, 'friendship': 120553, 'finance': 118324, 'emotions': 70621, 'work': 70560, 'education': 59018}) '''
