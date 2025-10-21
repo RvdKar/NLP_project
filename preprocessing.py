@@ -10,6 +10,8 @@ def load_reddit_data(data_directory, output_path):
          open(output_path, 'w', encoding='utf-8') as outfile: # By doing that we aim to avoid loading the whole data at the same time
         for i, line in enumerate(file, 1):
             try:
+                if i >= 10000:
+                    break
                 data = json.loads(line)
                 body = data.get('body', '').strip()
                 outfile.write(body + "\n")
@@ -17,7 +19,7 @@ def load_reddit_data(data_directory, output_path):
                 continue  # This is done to avoid missing comments or bad lines
 
 data_dir = './data/amitheasshole_comments.ndjson'
-#reddit_data = load_reddit_data(data_dir, './data/amitheasshole_comments.txt') # Can be commented out after writing the data to a file
+reddit_data = load_reddit_data(data_dir, './data/amitheasshole_comments.txt') # Can be commented out after writing the data to a file
 
 def tokenize_text(text):
     return word_tokenize(text)
@@ -44,4 +46,4 @@ def write_reddit_data(text, output_directory):
             cleaned_line = " ".join(data)
             outfile.write(cleaned_line + "\n")
 
-write_reddit_data(reddit_data_txt, './data/amitheasshole_comments_preprocessed.txt')
+#write_reddit_data(reddit_data_txt, './data/amitheasshole_comments_preprocessed.txt')
