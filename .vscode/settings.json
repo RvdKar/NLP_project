@@ -7,7 +7,5 @@
     "jupyter.notebookFileRoot": "${workspaceFolder}",
 
     "autoDocstring.docstringFormat": "sphinx-notypes",
-    "autoDocstring.quoteStyle": "'''",
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": []
+    "autoDocstring.quoteStyle": "'''"
 }
