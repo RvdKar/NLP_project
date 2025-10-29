@@ -2,9 +2,6 @@
 /data/**
 !/data/.gitkeep
 
-/interim/**
-!/interim/.gitkeep
-
 /reports/figures/**
 !/reports/figures/.gitkeep
 
