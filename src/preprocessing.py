@@ -1,8 +1,4 @@
 import json
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords
-import pandas as pd
 from collections import defaultdict
 
 def load_json(filename):
@@ -11,13 +7,14 @@ def load_json(filename):
     
     return data
 
+
 def load_reddit_data(comments_directory, submissions_directory):
     with open(comments_directory, 'r', encoding='utf-8') as file:
         comment_id_pairs = []
         for i, line in enumerate(file, 1):
             try:
-                if i >= 70000:
-                    break
+                # if i >= 500000:
+                #     break
                 data = json.loads(line)
                 body = data.get('body', '').strip() # Comment text
                 link_id = data.get('link_id', '').strip() # Link id
@@ -34,8 +31,8 @@ def load_reddit_data(comments_directory, submissions_directory):
         text_id_pairs = []
         for i, line in enumerate(file, 1):
             try:
-                if i >= 70000:
-                    break
+                # if i >= 500000:
+                #     break
                 data = json.loads(line)
                 title = data.get('title', '').strip() # Submission title
                 body = data.get('selftext', '').strip() # Submission text
@@ -77,20 +74,8 @@ def load_reddit_data(comments_directory, submissions_directory):
     with open("./data/output.json", "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False, indent=2)
 
-comments_dir = './data/amitheasshole_comments.ndjson'
-submissions_dir = './data/amitheasshole_submissions.ndjson'
-reddit_data = load_reddit_data(comments_dir, submissions_dir) # Comment out after running it once
+if __name__ == "__main__":
+    comments_dir = './data/amitheasshole_comments.ndjson'
+    submissions_dir = './data/amitheasshole_submissions.ndjson'
+    reddit_data = load_reddit_data(comments_dir, submissions_dir)
 
-def tokenize_text(text):
-    return word_tokenize(text)
-
-def remove_stopwords(text):
-    stop_words = set(stopwords.words('english'))
-    word_tokens = tokenize_text(text)
-    return [word for word in word_tokens if not word in stop_words] # This ensures the return of the words that are not in the stopwords list
-
-def lemmetize_text(text):
-    lemmatizer = WordNetLemmatizer()
-    words = tokenize_text(text)
-    lemmatized_words = [lemmatizer.lemmatize(word) for word in words]
-    return ' '.join(lemmatized_words)
