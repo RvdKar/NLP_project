@@ -1,5 +1,6 @@
 import re
 from collections import Counter
+from preprocessing import load_json
 
 '''Since it is impossible automatically generate themes using Regular Expressions(RE), keywords will be manually selected'''
 
@@ -10,20 +11,19 @@ themes = {'finance':  re.compile(r"\b(rent|loan|debt|money|bills?|salary|wages?|
           'work': re.compile(r"\b(boss|coworker|colleague|manager|office|job|promotion|workplace|company|employment|employee|employer)\b", re.IGNORECASE),
           'societal norms': re.compile(r"\b(right|wrong|selfish|respect|rude|entitled|ethical|manners|justice|unfair|fair)\b", re.IGNORECASE),
           'education': re.compile(r"\b(school|college|university|classmate|professor|teacher|exam|homework|study|student)\b", re.IGNORECASE),
-          'emotions': re.compile(r"\b(angry|furious|mad|rage|yelled?|screamed?|argument|fight|rude|disrespect)\b", re.IGNORECASE),
+          'emotions': re.compile(r"\b(angry|furious|mad|rage|yell(ed)?|scream(ed)?|argument|fight|rude|disrespect)\b", re.IGNORECASE),
           }
 
-def generate_themes(file_path, regex_themes):
+corpus = "./data/output.json"
+
+def generate_themes(regex_themes):
 
     theme_counts = Counter()
-
-    with open(file_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            for theme, pattern in regex_themes.items():
-                if pattern.search(line):
-                    theme_counts[theme] += 1
+    for line in load_json(corpus):
+        for theme, pattern in regex_themes.items():
+            if pattern.search(line):
+                theme_counts[theme] += 1
 
     return theme_counts
 
-#print(generate_themes('./data/amitheasshole_comments_preprocessed.txt', themes))
-''' Counter({'family': 1316478, 'relationships': 787360, 'societal norms': 589167, 'friendship': 325116, 'finance': 292906, 'emotions': 182844, 'work': 180299, 'education': 153682}) '''
+print(generate_themes(themes))
