@@ -4,55 +4,68 @@ A term-document matrix is merely a mathematical representation of a set of docum
 ''' 
 
 from preprocessing import load_json
-import gensim
 from gensim import corpora
-from gensim.models import LsiModel, LdaModel, CoherenceModel
+from gensim.models.ldamulticore import LdaMulticore
 from nltk.corpus import stopwords
 from collections import Counter
 import string
-import nltk
 from nltk.stem.wordnet import WordNetLemmatizer
 import re
 
-file_dir = "./data/output.json"
-corpus = load_json(file_dir)
+if __name__ == "__main__":
+    file_dir = "./data/output.json"
+    corpus = load_json(file_dir)
+    corpus = [doc.split(' [======>] ')[0] for doc in corpus if isinstance(doc, str)] # Only get the submissions
+    corpus = [doc for doc in corpus if len(doc.split()) > 20] # To filter out short documents (submissions)
 
-stop = set(stopwords.words('english'))
-exclude = set(string.punctuation)
-lemma = WordNetLemmatizer()
+    stop = set(stopwords.words('english'))
+    exclude = set(string.punctuation)
+    lemma = WordNetLemmatizer()
 
-def clean(doc):
-    doc = doc.lower()
-    doc = re.sub(r"['|`]", "", doc)
-    doc = re.sub(r'[^a-zA-Z]', ' ', doc)
-    doc = re.sub(r"\b(aita|nta|yta|edit|update)\b", "", doc)
-    stop_free = " ".join([i for i in doc.lower().split() if i not in stop])
-    punc_free = "".join(ch for ch in stop_free if ch not in exclude)
-    normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
-    return normalized
 
-clean_corpus_temp = [clean(doc).split() for doc in corpus]
-most_freq = Counter(word for doc in clean_corpus_temp for word in doc)
-banned_words = set([word for word, _ in most_freq.most_common(50)])
+    def clean(doc):
+        doc = doc.lower()
+        doc = re.sub(r"['|`]", "", doc)
+        doc = re.sub(r"\bamp\b", " ", doc)
+        doc = re.sub(r'[^a-zA-Z]', ' ', doc)
+        doc = re.sub(r"\b(aita|nta|yta|edit|update)\b", "", doc)
+        stop_free = " ".join([i for i in doc.lower().split() if i not in stop])
+        punc_free = "".join(ch for ch in stop_free if ch not in exclude)
+        normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
+        return normalized
 
-def ban_most_freq():
-     return [[word for word in doc if word not in banned_words]
-        for doc in clean_corpus_temp]
-clean_corpus = ban_most_freq()
 
-dictionary = corpora.Dictionary(clean_corpus)
-doc_term_matrix = [dictionary.doc2bow(doc) for doc in clean_corpus]
+    chunk_size = 5000
+    clean_corpus_temp = []
 
-# Build LDA model
-lda_model = LdaModel(corpus=doc_term_matrix,
-                    id2word=dictionary,
-                    num_topics=7, 
-                    random_state=100,
-                    update_every=1,
-                    chunksize=100,
-                    passes=10,
-                    alpha='auto',
-                    per_word_topics=True)
+    for i, doc in enumerate(corpus, 1):
+        clean_doc = clean(doc).split()
+        clean_corpus_temp.append(clean_doc)
 
-topics = lda_model.print_topics(num_words=5)
-print(topics)
+    most_freq = Counter(word for doc in clean_corpus_temp for word in doc)
+    banned_words = set([word for word, _ in most_freq.most_common(50)])
+
+    def ban_most_freq():
+        return [[word for word in doc if word not in banned_words]
+            for doc in clean_corpus_temp]
+    clean_corpus = ban_most_freq()
+
+    dictionary = corpora.Dictionary(clean_corpus)
+    dictionary.filter_extremes(no_below=3, no_above=0.5)
+    doc_term_matrix = [dictionary.doc2bow(doc) for doc in clean_corpus]
+
+    # Build LDA model
+    lda_model = lda_model = LdaMulticore(
+        corpus=doc_term_matrix,
+        id2word=dictionary,
+        num_topics=10,
+        passes=8,
+        workers=4,          # adjust to number of CPU cores
+        chunksize=2000,
+        random_state=42,
+        per_word_topics=False
+    )
+
+    topics = lda_model.print_topics(num_words=5)
+    for i, topic in topics:
+        print(f"Topic {i + 1}: {topic}")
