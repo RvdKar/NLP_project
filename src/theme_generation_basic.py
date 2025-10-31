@@ -11,7 +11,7 @@ themes = {'finance':  re.compile(r"\b(rent|loan|debt|money|bills?|salary|wages?|
           'work': re.compile(r"\b(boss|coworker|colleague|manager|office|job|promotion|workplace|company|employment|employee|employer)\b", re.IGNORECASE),
           'societal norms': re.compile(r"\b(right|wrong|selfish|respect|rude|entitled|ethical|manners|justice|unfair|fair)\b", re.IGNORECASE),
           'education': re.compile(r"\b(school|college|university|classmate|professor|teacher|exam|homework|study|student)\b", re.IGNORECASE),
-          'emotions': re.compile(r"\b(angry|furious|mad|rage|yell(ed)?|scream(ed)?|argument|fight|rude|disrespect(ed)?)\b", re.IGNORECASE),
+          #'emotions': re.compile(r"\b(angry|furious|mad|rage|yell(ed)?|scream(ed)?|argument|fight|rude|disrespect(ed)?)\b", re.IGNORECASE),
           }
 
 corpus = "./data/output.json"
